@@ -66,50 +66,61 @@
     margin: 0 auto;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
     padding: 8px 16px;
   }
   .today-btn {
     flex: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--ink);
+    text-align: center;
     text-decoration: none;
+    color: var(--ink);
     background: var(--canvas);
     border: 1px solid var(--hair);
     border-radius: 9999px;
-    padding: 8px 14px;
+    padding: 6px 13px;
+    line-height: 1.25;
     white-space: nowrap;
   }
   .today-btn:active { background: var(--soft); }
-  .today-btn .num { font-variant-numeric: tabular-nums; }
+  .today-btn .tb-label { display: block; font-size: 12px; font-weight: 600; }
+  .today-btn .num {
+    display: block;
+    font-size: 11px;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .topbar-divider {
+    flex: none;
+    width: 1px;
+    height: 28px;
+    background: var(--hair-soft);
+  }
   .daystrip {
     flex: 1;
     display: flex;
-    gap: 4px;
+    gap: 2px;
     overflow-x: auto;
     scrollbar-width: none;
     -webkit-overflow-scrolling: touch;
+    -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 20px), transparent);
+    mask-image: linear-gradient(to right, #000 calc(100% - 20px), transparent);
   }
   .daystrip::-webkit-scrollbar { display: none; }
   .day-cell {
     flex: none;
-    width: 42px;
+    width: 40px;
     text-align: center;
     text-decoration: none;
     color: var(--ink);
     padding: 2px 0 3px;
   }
   .day-cell .dnum {
-    width: 32px;
-    height: 32px;
-    line-height: 32px;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
     margin: 0 auto;
     border-radius: 9999px;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
     font-variant-numeric: tabular-nums;
   }
@@ -496,6 +507,11 @@
     .ev .t { flex-basis: 44px; }
     .city-banner .city-dates { display: none; }
     .route .place { display: none; }
+    .topbar-inner { gap: 8px; padding: 6px 12px; }
+    .today-btn { padding: 5px 11px; }
+    .day-cell { width: 36px; }
+    .day-cell .dnum { width: 28px; height: 28px; line-height: 28px; font-size: 12.5px; }
+    .day-cell .dwd { font-size: 9px; }
   }
 </style>
 </head>
@@ -503,7 +519,8 @@
 
 <nav class="topbar" aria-label="日期導覽">
   <div class="topbar-inner">
-    <a class="today-btn" href="#day1" id="today-btn">今天 <span class="num" id="today-date">–</span></a>
+    <a class="today-btn" href="#day1" id="today-btn"><span class="tb-label">今天</span><span class="num" id="today-date">–</span></a>
+    <span class="topbar-divider" aria-hidden="true"></span>
     <div class="daystrip" id="daystrip">
       <a class="day-cell" href="#day1"><div class="dnum">24</div><div class="dwd">四</div></a>
       <a class="day-cell" href="#day2"><div class="dnum">25</div><div class="dwd">五</div></a>
