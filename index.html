@@ -49,7 +49,81 @@
   .wrap {
     max-width: 760px;
     margin: 0 auto;
-    padding: calc(28px + env(safe-area-inset-top)) 20px calc(96px + env(safe-area-inset-bottom));
+    padding: 24px 20px calc(96px + env(safe-area-inset-bottom));
+  }
+
+  /* ── 置頂日期導覽(date-picker-day 樣式)── */
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 90;
+    background: var(--canvas);
+    border-bottom: 1px solid var(--hair-soft);
+    padding-top: env(safe-area-inset-top);
+  }
+  .topbar-inner {
+    max-width: 760px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 16px;
+  }
+  .today-btn {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+    text-decoration: none;
+    background: var(--canvas);
+    border: 1px solid var(--hair);
+    border-radius: 9999px;
+    padding: 8px 14px;
+    white-space: nowrap;
+  }
+  .today-btn:active { background: var(--soft); }
+  .today-btn .num { font-variant-numeric: tabular-nums; }
+  .daystrip {
+    flex: 1;
+    display: flex;
+    gap: 4px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .daystrip::-webkit-scrollbar { display: none; }
+  .day-cell {
+    flex: none;
+    width: 42px;
+    text-align: center;
+    text-decoration: none;
+    color: var(--ink);
+    padding: 2px 0 3px;
+  }
+  .day-cell .dnum {
+    width: 32px;
+    height: 32px;
+    line-height: 32px;
+    margin: 0 auto;
+    border-radius: 9999px;
+    font-size: 14px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  .day-cell .dwd { font-size: 10px; color: var(--muted); line-height: 1.3; }
+  .day-cell.active .dnum { background: var(--strong); }
+  .day-cell.today .dnum { background: var(--ink); color: #ffffff; }
+  .day-cell.race .dwd::after {
+    content: "";
+    display: inline-block;
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    background: var(--rausch);
+    margin-left: 3px;
+    vertical-align: 1px;
   }
 
   /* ── Header ── */
@@ -170,7 +244,7 @@
   .g-row.race-row .g-what { color: var(--rausch); font-weight: 600; }
 
   /* ── 城市區塊 ── */
-  .city-section { margin-top: 48px; scroll-margin-top: 12px; }
+  .city-section { margin-top: 48px; scroll-margin-top: calc(70px + env(safe-area-inset-top)); }
   .city-banner {
     position: relative;
     border-radius: 14px;
@@ -209,7 +283,7 @@
     border-radius: 14px;
     padding: 20px;
     margin-bottom: 12px;
-    scroll-margin-top: 16px;
+    scroll-margin-top: calc(74px + env(safe-area-inset-top));
   }
   .day-head {
     display: flex;
@@ -343,7 +417,7 @@
   details.more .detail-list b { color: var(--ink); font-weight: 600; }
 
   /* ── 筆記 ── */
-  #notes { scroll-margin-top: 12px; }
+  #notes { scroll-margin-top: calc(70px + env(safe-area-inset-top)); }
   h2 { font-size: 21px; font-weight: 700; line-height: 1.43; margin: 56px 0 2px; }
   .h2-sub { color: var(--muted); font-size: 14px; margin: 0 0 18px; }
   .notes {
@@ -426,6 +500,22 @@
 </style>
 </head>
 <body>
+
+<nav class="topbar" aria-label="日期導覽">
+  <div class="topbar-inner">
+    <a class="today-btn" href="#day1" id="today-btn">今天 <span class="num" id="today-date">–</span></a>
+    <div class="daystrip" id="daystrip">
+      <a class="day-cell" href="#day1"><div class="dnum">24</div><div class="dwd">四</div></a>
+      <a class="day-cell" href="#day2"><div class="dnum">25</div><div class="dwd">五</div></a>
+      <a class="day-cell" href="#day3"><div class="dnum">26</div><div class="dwd">六</div></a>
+      <a class="day-cell race" href="#day4"><div class="dnum">27</div><div class="dwd">日</div></a>
+      <a class="day-cell" href="#day5"><div class="dnum">28</div><div class="dwd">一</div></a>
+      <a class="day-cell" href="#day6"><div class="dnum">29</div><div class="dwd">二</div></a>
+      <a class="day-cell" href="#day7"><div class="dnum">30</div><div class="dwd">三</div></a>
+      <a class="day-cell" href="#day8"><div class="dnum">1</div><div class="dwd">四</div></a>
+    </div>
+  </div>
+</nav>
 
 <div class="wrap">
   <header id="top">
@@ -761,6 +851,47 @@
       document.getElementById('cd-race').textContent = d2;
       document.getElementById('countdown').classList.add('show');
     }
+  })();
+
+  // 置頂日期導覽
+  (function () {
+    var now = new Date();
+    var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    var start = new Date(2026, 8, 24);
+    var idx = Math.round((today - start) / 86400000);   // 0 = Day 1
+    var cells = Array.prototype.slice.call(document.querySelectorAll('.day-cell'));
+    var strip = document.getElementById('daystrip');
+    var btn = document.getElementById('today-btn');
+
+    var mm = String(now.getMonth() + 1).padStart(2, '0');
+    var dd = String(now.getDate()).padStart(2, '0');
+    document.getElementById('today-date').textContent = mm + '.' + dd;
+
+    // 「今天」按鈕:旅程中跳到當天,旅程外跳 Day 1
+    var target = (idx >= 0 && idx < 8) ? idx : 0;
+    btn.setAttribute('href', '#day' + (target + 1));
+    if (idx >= 0 && idx < 8) cells[idx].classList.add('today');
+
+    // 捲動時高亮目前看到的那天,並讓它保持在日期列可視範圍內
+    var cards = cells.map(function (c, i) { return document.getElementById('day' + (i + 1)); });
+    var lastCur = -2;
+    function onScroll() {
+      var probe = window.scrollY + window.innerHeight * 0.35;
+      var cur = -1;
+      cards.forEach(function (card, i) {
+        if (card && card.offsetTop <= probe) cur = i;
+      });
+      if (cur === lastCur) return;
+      lastCur = cur;
+      cells.forEach(function (c, i) { c.classList.toggle('active', i === cur); });
+      if (cur >= 0) {
+        var cell = cells[cur];
+        var want = cell.offsetLeft - strip.clientWidth / 2 + cell.clientWidth / 2;
+        strip.scrollTo({ left: want, behavior: 'smooth' });
+      }
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
   })();
 
   // 底部導覽 active 狀態(scroll spy)
