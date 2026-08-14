@@ -127,8 +127,8 @@
   .day-cell .dwd { font-size: 10px; color: var(--muted); line-height: 1.3; }
   .day-cell.active .dnum { background: var(--strong); }
   .day-cell.today .dnum { background: var(--ink); color: #ffffff; }
-  .day-cell.race { position: relative; }
-  .day-cell.race::after {
+  .day-cell.race-day { position: relative; }
+  .day-cell.race-day::after {
     content: "";
     position: absolute;
     top: 1px;
@@ -526,7 +526,7 @@
       <a class="day-cell" href="#day1"><div class="dnum">24</div><div class="dwd">四</div></a>
       <a class="day-cell" href="#day2"><div class="dnum">25</div><div class="dwd">五</div></a>
       <a class="day-cell" href="#day3"><div class="dnum">26</div><div class="dwd">六</div></a>
-      <a class="day-cell race" href="#day4"><div class="dnum">27</div><div class="dwd">日</div></a>
+      <a class="day-cell race-day" href="#day4"><div class="dnum">27</div><div class="dwd">日</div></a>
       <a class="day-cell" href="#day5"><div class="dnum">28</div><div class="dwd">一</div></a>
       <a class="day-cell" href="#day6"><div class="dnum">29</div><div class="dwd">二</div></a>
       <a class="day-cell" href="#day7"><div class="dnum">30</div><div class="dwd">三</div></a>
